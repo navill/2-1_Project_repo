@@ -12,34 +12,26 @@ class Role(models.TextChoices):
 
 
 class UserManager(BaseUserManager):
-    # def create_user(self,
-    #                 username: str,
-    #                 email: str,
-    #                 birth: str = None,
-    #                 password: str = None) -> 'AdminUser':
+    """
+    [kwargs]
+    username: str
+    email: str
+    birth: str
+    password: str
+    """
     def create_user(self, **kwargs):
         user = self._default_set(**kwargs)
         return user
 
-    # def create_superuser(self,
-    #                      username: str,
-    #                      email: str,
-    #                      birth: str = None,
-    #                      password: str = None) -> 'AdminUser':
     def create_superuser(self, **kwargs):
         user = self._default_set(**kwargs)
         return user
 
-    # def _default_set(self,
-    #                  username: str,
-    #                  email: str = None,
-    #                  birth: str = None,
-    #                  password: str = None) -> 'AdminUser':
     def _default_set(self, **kwargs):
         user = self.model(**kwargs)
         password = kwargs.get('password', None)
         if password:
-            user.set_password(kwargs.get)
+            user.set_password(password)
         user.save(using=self._db)
         return user
 
