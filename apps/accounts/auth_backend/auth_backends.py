@@ -1,18 +1,18 @@
-from django.conf import settings
-from django.contrib.auth.backends import BaseBackend
-from django.contrib.auth.hashers import check_password
-from django.contrib.auth.models import User
+import importlib
 
-from accounts.models import Role, StaffUser, NormalUser
+from django.contrib.auth.backends import BaseBackend
+
+from accounts.models import NormalUser, User
 
 
 class AuthenticationBackend(BaseBackend):
     def authenticate(self, request, username=None, password=None, role=None):
-        if role == Role.NORMAL:
+        user_class = get_user_class(role)
+        if user_class in User.__subclasses__():  # 이부분이 필요 할까?
             try:
-                user = NormalUser.objects.get(username=username)
-                user.check_password(raw_password=password)
-            except user.DoesNotExist:
+                user = user_class.objects.get(username=username)
+                user.check_password(password)
+            except User.DoesNotExist:
                 raise
             return user
         return None
@@ -23,3 +23,8 @@ class AuthenticationBackend(BaseBackend):
         except NormalUser.DoesNotExist:
             return None
 
+
+def get_user_class(role):
+    class_name = ''.join([role, 'User'])
+    my_module = importlib.import_module("accounts.models")
+    return getattr(my_module, class_name)

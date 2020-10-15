@@ -6,8 +6,8 @@ from django.db.models import Q
 
 class Role(models.TextChoices):
     # ADMIN = 'admin'
-    STAFF = 'staff'
-    NORMAL = 'normal'
+    STAFF = 'Staff'
+    NORMAL = 'Normal'
 
 
 class UserManager(BaseUserManager):

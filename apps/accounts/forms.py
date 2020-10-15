@@ -2,40 +2,31 @@ from django import forms
 from django.conf import settings
 from django.contrib.auth import authenticate, get_user_model
 
+from accounts.auth_backend.auth_backends import get_user_class
 from accounts.models import NormalUser, Role, StaffUser
 
 User = get_user_model()
 
 
 class UserLoginForm(forms.Form):
-    role = forms.ChoiceField(choices=Role.choices, widget=forms.RadioSelect())
+
     username = forms.CharField()
     password = forms.CharField(widget=forms.PasswordInput)
 
-    def clean(self):
-        username = self.cleaned_data.get("username")
-        password = self.cleaned_data.get("password")
+    def clean_username(self):
+        username = self.cleaned_data.get('username')
         role = self.cleaned_data.get('role')
+        user_class = get_user_class(role)
+        user = user_class.objects.filter(username=username)
+        if user.exists():
+            raise forms.ValidationError('This username has already been registered')
+        return username
 
-        # self._change_auth_model_as_role(role)
-
-        if username and password:
-            user = authenticate(username=username, password=password)
-            if not user:
-                raise forms.ValidationError("This user does not exist")
-            if not user.check_password(password):
-                raise forms.ValidationError("Incorrect passsword")
-            if not user.is_active:
-                raise forms.ValidationError("This user is not longer active.")
-        return super().clean()
-
-    def _change_auth_model_as_role(self, role):
-        if role == Role.STAFF:
-            settings.AUTH_USER_MODEL = StaffUser
-        elif role == Role.NORMAL:
-            settings.AUTH_USER_MODEL = NormalUser
-        else:
-            raise AttributeError('Invalid role')
+    def clean_password(self):
+        password = self.cleaned_data.get('password')
+        if len(password) < 8:
+            raise forms.ValidationError("Password must be at least 8 characters")
+        return password
 
 
 class UserCreateForm(forms.ModelForm):
@@ -43,18 +34,22 @@ class UserCreateForm(forms.ModelForm):
     email = forms.EmailField(label='Email address')
     password = forms.CharField(widget=forms.PasswordInput)
     password2 = forms.CharField(widget=forms.PasswordInput)
+    role = forms.ChoiceField(choices=Role.choices, widget=forms.RadioSelect())
 
     class Meta:
         model = NormalUser
         fields = [
             'username',
             'email',
-            'password'
+            'password',
+            'role'
         ]
 
     def clean_username(self):
         username = self.cleaned_data.get('username')
-        user = NormalUser.objects.filter(username=username)
+        role = self.cleaned_data.get('role')
+        user_class = get_user_class(role)
+        user = user_class.objects.filter(username=username)
         if user.exists():
             raise forms.ValidationError('this username has already been registered')
         return username

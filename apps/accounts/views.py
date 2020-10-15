@@ -1,4 +1,4 @@
-from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth import login, logout, authenticate
 from django.shortcuts import render, redirect
 
 # Create your views here.
@@ -44,12 +44,11 @@ def login_view(request):
     next_page = request.GET.get('next')
     title = "Login"
     form = UserLoginForm(request.POST or None)
-    print(form)
     if form.is_valid():
         username = form.cleaned_data.get("username")
         password = form.cleaned_data.get('password')
-        
-        user = authenticate(username=username, password=password)
+        role = form.cleaned_data.get('role')
+        user = authenticate(username=username, password=password, role=role)
         login(request, user)
         if next_page:
             return redirect(next_page)

@@ -119,4 +119,12 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 AUTH_USER_MODEL = 'accounts.NormalUser'
+AUTHENTICATION_BACKENDS = ['accounts.auth_backend.auth_backends.AuthenticationBackend']
+
+
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+SHELL_PLUS_IMPORTS = [
+    'from accounts.models import *',
+    'from accounts.auth_backend.auth_backends import *'
+    'from accounts.views import *'
+]
