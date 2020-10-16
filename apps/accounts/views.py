@@ -10,13 +10,12 @@ def create_normal_user(request):
     title = "Register"
     form = UserCreateForm(request.POST or None)
     next_page = request.GET.get('next')
-
     if form.is_valid():
-        user = form.save(commit=False)
-        password = form.cleaned_data.get('password')
-        user.set_password(password)
+        del form.cleaned_data['password2']
+        user = form.user_class(**form.cleaned_data)
+        user.set_password(user.password)
         user.save()
-        new_user = authenticate(username=user.username, password=password)
+        new_user = authenticate(username=user.username, password=user.password, role=user.role)
         login(request, new_user)
         if next_page:
             return redirect(next_page)
@@ -34,6 +33,7 @@ def list_normal_user(request):
     title = 'User List'
     queryset = NormalUser.objects.all()
     context = {
+        'user': request.user,
         "object_list": queryset,
         "title": title,
     }

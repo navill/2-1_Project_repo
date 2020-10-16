@@ -1,26 +1,25 @@
 from django import forms
-from django.conf import settings
-from django.contrib.auth import authenticate, get_user_model
+from django.contrib.auth import get_user_model
 
-from accounts.auth_backend.auth_backends import get_user_class
-from accounts.models import NormalUser, Role, StaffUser
+from accounts.auth_backend.auth_backends import get_user_class_as_role
+from accounts.models import NormalUser, Role
 
 User = get_user_model()
 
 
-class UserLoginForm(forms.Form):
-
+class UserForm(forms.Form):
+    role = forms.ChoiceField(choices=Role.choices, widget=forms.RadioSelect())
     username = forms.CharField()
     password = forms.CharField(widget=forms.PasswordInput)
+    user_class = None
 
-    def clean_username(self):
-        username = self.cleaned_data.get('username')
+    def clean_role(self):
         role = self.cleaned_data.get('role')
-        user_class = get_user_class(role)
-        user = user_class.objects.filter(username=username)
-        if user.exists():
-            raise forms.ValidationError('This username has already been registered')
-        return username
+        if role in Role:
+            self.user_class = get_user_class_as_role(role)
+            return role
+        else:
+            raise forms.ValidationError('Unkown role')
 
     def clean_password(self):
         password = self.cleaned_data.get('password')
@@ -28,35 +27,32 @@ class UserLoginForm(forms.Form):
             raise forms.ValidationError("Password must be at least 8 characters")
         return password
 
+    def _get_user(self):
+        username = self.cleaned_data.get('username')
+        return self.user_class.objects.filter(username=username).first()
 
-class UserCreateForm(forms.ModelForm):
-    username = forms.CharField()
+
+class UserLoginForm(UserForm):
+    def clean_username(self):
+        user = self._get_user()
+        if not user:
+            raise forms.ValidationError('does not exist user')
+        return user.username
+
+
+class UserCreateForm(UserForm):
     email = forms.EmailField(label='Email address')
-    password = forms.CharField(widget=forms.PasswordInput)
     password2 = forms.CharField(widget=forms.PasswordInput)
-    role = forms.ChoiceField(choices=Role.choices, widget=forms.RadioSelect())
-
-    class Meta:
-        model = NormalUser
-        fields = [
-            'username',
-            'email',
-            'password',
-            'role'
-        ]
 
     def clean_username(self):
-        username = self.cleaned_data.get('username')
-        role = self.cleaned_data.get('role')
-        user_class = get_user_class(role)
-        user = user_class.objects.filter(username=username)
-        if user.exists():
+        user = self._get_user()
+        if user:
             raise forms.ValidationError('this username has already been registered')
-        return username
+        return self.cleaned_data.get('username')
 
     def clean_email(self):
         email = self.cleaned_data.get('email')
-        user = NormalUser.objects.filter(email='email')
+        user = self.user_class.objects.filter(email=email)
         if user.exists():
             raise forms.ValidationError('this email has already been registered')
         return email
