@@ -32,8 +32,9 @@ class AuthenticationBackend(BaseBackend):
 
     def get_user(self, user_id):
         try:
-            user_class = UserClass.user_class
-            return user_class.objects.get(pk=user_id)
+            if hasattr(UserClass, 'user_class'):
+                user_class = UserClass.user_class
+                return user_class.objects.get(pk=user_id)
         except NormalUser.DoesNotExist:
             return None
 

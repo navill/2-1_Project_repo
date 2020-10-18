@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth import get_user_model
 
 from accounts.auth_backend.auth_backends import get_user_class_as_role
-from accounts.models import NormalUser, Role
+from accounts.models import Role
 
 User = get_user_model()
 

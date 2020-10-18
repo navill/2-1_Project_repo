@@ -1,9 +1,9 @@
 from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 
-# Create your views here.
 from accounts.forms import UserCreateForm, UserLoginForm
-from accounts.models import NormalUser
+from accounts.models import NormalUser, Role, StaffUser
 
 
 def create_normal_user(request):
@@ -40,6 +40,18 @@ def list_normal_user(request):
     return render(request, "user_list.html", context)
 
 
+@login_required()
+def list_staff_user(request):
+    title = 'Staff User List'
+    queryset = StaffUser.objects.all()
+    context = {
+        'user': request.user,
+        "object_list": queryset,
+        "title": title,
+    }
+    return render(request, "user_list.html", context)
+
+
 def login_view(request):
     next_page = request.GET.get('next')
     title = "Login"
@@ -52,6 +64,9 @@ def login_view(request):
         login(request, user)
         if next_page:
             return redirect(next_page)
+
+        if role == Role.STAFF:
+            return redirect()
         return redirect("/")
     return render(request, "base_form.html", {"form": form, "title": title})
 
