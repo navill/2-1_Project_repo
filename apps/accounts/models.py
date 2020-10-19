@@ -25,6 +25,8 @@ class UserManager(BaseUserManager):
 
     def create_superuser(self, **kwargs):
         user = self._default_set(**kwargs)
+        user.is_admin = True
+        user.is_superuser = True
         return user
 
     def _default_set(self, **kwargs):
@@ -116,12 +118,16 @@ class AdminUser(User):
 
 # Staff User
 class StaffQuerySet(models.QuerySet):
-    pass
+    def active_staff(self):
+        return StaffUser.objects.filter(is_active=True)
 
 
 class StaffManager(models.Manager):
     def get_queryset(self):
         return StaffQuerySet(self.model, using=self._db)
+
+    def active_staff(self):
+        return self.get_queryset().active_staff()
 
 
 class StaffUser(User):
@@ -133,12 +139,16 @@ class StaffUser(User):
 
 # Normal User
 class NormalQuerySet(models.QuerySet):
-    pass
+    def active_user(self):
+        return NormalUser.objects.filter(is_active=True)
 
 
 class NormalManager(models.Manager):
     def get_queryset(self):
         return NormalQuerySet(self.model, using=self._db)
+
+    def active_user(self):
+        return self.get_queryset().active_user()
 
 
 class NormalUser(User):

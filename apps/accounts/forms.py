@@ -2,13 +2,13 @@ from django import forms
 from django.contrib.auth import get_user_model
 
 from accounts.auth_backend.auth_backends import get_user_class_as_role
-from accounts.models import NormalUser, Role
+from accounts.models import Role
 
 User = get_user_model()
 
 
 class UserForm(forms.Form):
-    role = forms.ChoiceField(choices=Role.choices, widget=forms.RadioSelect())
+    role = forms.ChoiceField(choices=Role.choices)
     username = forms.CharField()
     password = forms.CharField(widget=forms.PasswordInput)
     user_class = None
