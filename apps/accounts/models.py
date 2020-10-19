@@ -25,6 +25,8 @@ class UserManager(BaseUserManager):
 
     def create_superuser(self, **kwargs):
         user = self._default_set(**kwargs)
+        user.is_admin = True
+        user.is_superuser = True
         return user
 
     def _default_set(self, **kwargs):
