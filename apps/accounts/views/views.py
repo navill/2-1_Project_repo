@@ -8,9 +8,9 @@ from accounts.views.utils import add_info_to_session, do_login
 
 
 def create_normal_user(request):
+    next_page = request.GET.get('next')
     title = "Register"
     form = UserCreateForm(request.POST or None)
-    next_page = request.GET.get('next')
     if form.is_valid():
         username = form.cleaned_data.get('username')
         password = form.cleaned_data.get('password')
