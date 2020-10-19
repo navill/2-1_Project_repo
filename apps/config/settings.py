@@ -120,7 +120,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 AUTH_USER_MODEL = 'accounts.NormalUser'
 AUTHENTICATION_BACKENDS = ['accounts.auth_backend.auth_backends.AuthenticationBackend']
-
+LOGIN_URL = 'login'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 SHELL_PLUS_IMPORTS = [

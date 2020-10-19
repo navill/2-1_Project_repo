@@ -1,7 +1,7 @@
 import importlib
 from typing import Any
 
-from django.contrib.auth.backends import BaseBackend
+from django.contrib.auth.backends import ModelBackend
 
 from accounts.models import NormalUser, User
 
@@ -18,7 +18,7 @@ class UserClass:
     #     self._user_class = klass
 
 
-class AuthenticationBackend(BaseBackend):
+class AuthenticationBackend(ModelBackend):
     def authenticate(self, request, username=None, password=None, role=None):
         user_class = UserClass.user_class = get_user_class_as_role(role)
         user = None
@@ -31,10 +31,12 @@ class AuthenticationBackend(BaseBackend):
         return user
 
     def get_user(self, user_id):
+        user_class = None
         try:
-            user_class = UserClass.user_class
-            return user_class.objects.get(pk=user_id)
-        except NormalUser.DoesNotExist:
+            if hasattr(UserClass, 'user_class'):
+                user_class = UserClass.user_class
+                return user_class.objects.get(pk=user_id)
+        except user_class.DoesNotExist:
             return None
 
 
