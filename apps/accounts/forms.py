@@ -8,7 +8,7 @@ User = get_user_model()
 
 
 class UserForm(forms.Form):
-    role = forms.ChoiceField(choices=Role.choices, widget=forms.RadioSelect())
+    role = forms.ChoiceField(choices=Role.choices)
     username = forms.CharField()
     password = forms.CharField(widget=forms.PasswordInput)
     user_class = None
