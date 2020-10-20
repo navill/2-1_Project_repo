@@ -1,36 +1,76 @@
 from rest_framework.generics import GenericAPIView
 from rest_framework.mixins import *
 
+from accounts.api.admin_serializers import \
+    AdminCreateSerializer, AdminListSerializer, AdminRetrieveUpdateSerializer, AdminDestroySerializer
+from accounts.api.normal_serializers import \
+    NormalCreateSerializer, NormalListSerializer, NormalRetrieveUpdateSerializer, NormalDestroySerializer
+from accounts.api.staff_serializers import \
+    StaffCreateSerializer, StaffListSerializer, StaffRetrieveUpdateSerializer, StaffDestroySerializer
+from accounts.models import AdminUser, NormalUser, StaffUser
 
+
+# Normal
 class NormalUserCreateView(CreateModelMixin, GenericAPIView):
-    serializer_class = None
+    queryset = NormalUser.objects.all()
+    serializer_class = NormalCreateSerializer
 
 
 class NormalUserListView(ListModelMixin, GenericAPIView):
-    serializer_class = None
+    queryset = NormalUser.objects.all()
+    serializer_class = NormalListSerializer
 
 
-class NormalUserRetrieveView(RetrieveModelMixin, GenericAPIView):
-    serializer_class = None
+class NormalUserRetrieveUpdateView(RetrieveModelMixin, UpdateModelMixin, GenericAPIView):
+    queryset = NormalUser.objects.all()
+    serializer_class = NormalRetrieveUpdateSerializer
+    lookup_field = 'pk'
 
 
-class NormalUserDeleteView(DestroyModelMixin, GenericAPIView):
-    serializer_class = None
+class NormalUserDestroyView(DestroyModelMixin, GenericAPIView):
+    queryset = NormalUser.objects.all()
+    serializer_class = NormalDestroySerializer
 
 
+# Staff
 class StaffUserCreateView(CreateModelMixin, GenericAPIView):
-    serializer_class = None
+    queryset = StaffUser.objects.all()
+    serializer_class = StaffCreateSerializer
 
 
 class StaffUserListView(ListModelMixin, GenericAPIView):
-    serializer_class = None
+    queryset = StaffUser.objects.all()
+    serializer_class = StaffListSerializer
 
 
-class StaffUserRetrieveView(RetrieveModelMixin, GenericAPIView):
-    serializer_class = None
+class StaffUserRetrieveView(RetrieveModelMixin, UpdateModelMixin, GenericAPIView):
+    queryset = StaffUser.objects.all()
+    serializer_class = StaffRetrieveUpdateSerializer
+    lookup_field = 'pk'
 
 
-class StaffUserDeleteView(DestroyModelMixin, GenericAPIView):
-    serializer_class = None
+class StaffUserDestroyView(DestroyModelMixin, GenericAPIView):
+    queryset = StaffUser.objects.all()
+    serializer_class = StaffDestroySerializer
 
 
+# Admin
+class AdminUserCreateView(CreateModelMixin, GenericAPIView):
+    queryset = AdminUser.objects.all()
+    serializer_class = AdminCreateSerializer
+
+
+class AdminUserListView(ListModelMixin, GenericAPIView):
+    queryset = AdminUser.objects.all()
+    serializer_class = AdminListSerializer
+
+
+class AdminUserRetrieveUpdateView(RetrieveModelMixin, UpdateModelMixin, GenericAPIView):
+    queryset = AdminUser.objects.all()
+    serializer_class = AdminRetrieveUpdateSerializer
+    lookup_field = 'pk'
+
+
+class AdminUserDestroyView(DestroyModelMixin, GenericAPIView):
+    queryset = AdminUser.objects.all()
+    serializer_class = AdminDestroySerializer
