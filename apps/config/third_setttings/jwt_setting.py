@@ -1,7 +1,5 @@
 from datetime import timedelta
 
-from conf_secret import secrets
-
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
@@ -9,7 +7,7 @@ SIMPLE_JWT = {
     'BLACKLIST_AFTER_ROTATION': False,
 
     'ALGORITHM': 'HS256',
-    'SIGNING_KEY': secrets['SECRET_KEY'],
+    'SIGNING_KEY': 'secret_key',
     'VERIFYING_KEY': None,
     'AUDIENCE': None,
     'ISSUER': None,
