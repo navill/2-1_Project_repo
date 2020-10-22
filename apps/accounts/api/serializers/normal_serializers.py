@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.serializers import ModelSerializer
 
 from accounts.models import NormalUser
@@ -7,7 +8,8 @@ from accounts.models import NormalUser
 class NormalCreateSerializer(ModelSerializer):
     class Meta:
         model = NormalUser
-        fields = '__all__'
+        # fields = '__all__'
+        exclude = ['deleted', 'is_admin', 'is_active', 'is_superuser']
 
     # def create(self, validated_data):  # -> view에서 처리
     #     pass

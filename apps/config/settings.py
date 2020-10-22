@@ -11,6 +11,7 @@ DEBUG = True
 
 if DEBUG:
     from config.third_setttings.jwt_setting import *
+    from config.third_setttings.rest_api_setting import *
 
     SIMPLE_JWT['SIGNING_KEY'] = SECRET_KEY
 

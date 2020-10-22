@@ -129,6 +129,9 @@ class StaffManager(models.Manager):
     def active_staff(self):
         return self.get_queryset().active_staff()
 
+    # def all(self):
+    #     return self.get_queryset().active_staff()
+
 
 class StaffUser(User):
     role = models.CharField(max_length=6, choices=Role.choices, default=Role.STAFF)
@@ -150,8 +153,11 @@ class NormalManager(models.Manager):
     def active_user(self):
         return self.get_queryset().active_user()
 
+    # def all(self):
+    #     return self.get_queryset().active_user()
+
 
 class NormalUser(User):
     is_superuser = models.BooleanField(default=False)
 
-    normal_manager = UserManager()
+    normal_manager = NormalManager()

@@ -1,5 +1,6 @@
 from rest_framework.generics import GenericAPIView
 from rest_framework.mixins import *
+from rest_framework.pagination import LimitOffsetPagination
 
 from accounts.api.serializers.admin_serializers import \
     AdminCreateSerializer, AdminListSerializer, AdminRetrieveUpdateSerializer, AdminDestroySerializer
@@ -13,7 +14,6 @@ from accounts.models import AdminUser, NormalUser, StaffUser
 
 # Normal
 class NormalUserCreateView(CreateUserMixin, GenericAPIView):
-    queryset = NormalUser.objects.all()
     serializer_class = NormalCreateSerializer
 
     # todo: User.objects.create_user()를 이용해 계정 생성
@@ -23,7 +23,7 @@ class NormalUserCreateView(CreateUserMixin, GenericAPIView):
 
 
 class NormalUserListView(ListModelMixin, GenericAPIView):
-    queryset = NormalUser.objects.all()
+    queryset = NormalUser.normal_manager.active_user()
     serializer_class = NormalListSerializer
 
     def get(self, request, *args, **kwargs):
@@ -31,7 +31,7 @@ class NormalUserListView(ListModelMixin, GenericAPIView):
 
 
 class NormalUserRetrieveUpdateView(RetrieveModelMixin, UpdateModelMixin, GenericAPIView):
-    queryset = NormalUser.objects.all()
+    queryset = NormalUser.normal_manager.active_user()
     serializer_class = NormalRetrieveUpdateSerializer
     lookup_field = 'pk'
 
@@ -43,7 +43,7 @@ class NormalUserRetrieveUpdateView(RetrieveModelMixin, UpdateModelMixin, Generic
 
 
 class NormalUserDestroyView(DestroyModelMixin, GenericAPIView):
-    queryset = NormalUser.objects.all()
+    queryset = NormalUser.normal_manager.active_user()
     serializer_class = NormalDestroySerializer
     lookup_field = 'pk'
 
@@ -53,7 +53,6 @@ class NormalUserDestroyView(DestroyModelMixin, GenericAPIView):
 
 # Staff
 class StaffUserCreateView(CreateUserMixin, GenericAPIView):
-    queryset = StaffUser.objects.all()
     serializer_class = StaffCreateSerializer
 
     def post(self, request, *args, **kwargs):
@@ -61,15 +60,16 @@ class StaffUserCreateView(CreateUserMixin, GenericAPIView):
 
 
 class StaffUserListView(ListModelMixin, GenericAPIView):
-    queryset = StaffUser.objects.all()
+    queryset = StaffUser.staff_manager.active_staff()
     serializer_class = StaffListSerializer
+    pagination_class = LimitOffsetPagination
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
 
 
 class StaffUserRetrieveUpdateView(RetrieveModelMixin, UpdateModelMixin, GenericAPIView):
-    queryset = StaffUser.objects.all()
+    queryset = StaffUser.staff_manager.active_staff()
     serializer_class = StaffRetrieveUpdateSerializer
     lookup_field = 'pk'
 
@@ -81,7 +81,7 @@ class StaffUserRetrieveUpdateView(RetrieveModelMixin, UpdateModelMixin, GenericA
 
 
 class StaffUserDestroyView(DestroyModelMixin, GenericAPIView):
-    queryset = StaffUser.objects.all()
+    queryset = StaffUser.staff_manager.active_staff()
     serializer_class = StaffDestroySerializer
     lookup_field = 'pk'
 
@@ -91,7 +91,6 @@ class StaffUserDestroyView(DestroyModelMixin, GenericAPIView):
 
 # Admin
 class AdminUserCreateView(CreateUserMixin, GenericAPIView):
-    queryset = AdminUser.objects.all()
     serializer_class = AdminCreateSerializer
 
     def post(self, request, *args, **kwargs):
@@ -101,6 +100,7 @@ class AdminUserCreateView(CreateUserMixin, GenericAPIView):
 class AdminUserListView(ListModelMixin, GenericAPIView):
     queryset = AdminUser.objects.all()
     serializer_class = AdminListSerializer
+    pagination_class = LimitOffsetPagination
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
