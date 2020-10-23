@@ -1,3 +1,5 @@
+from collections import OrderedDict
+
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.settings import api_settings
@@ -12,7 +14,10 @@ class CreateUserMixin:
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
     def perform_create(self, serializer):
-        serializer.save()
+        ModelClass = serializer.Meta.model
+        validated_data = serializer.validated_data
+        ModelClass.objects.create_user(**validated_data)
+        # serializer.save()
 
     def get_success_headers(self, data):
         try:

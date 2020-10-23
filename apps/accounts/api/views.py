@@ -1,13 +1,15 @@
+from __future__ import absolute_import
+
 from rest_framework.generics import GenericAPIView
 from rest_framework.mixins import *
 from rest_framework.pagination import LimitOffsetPagination
 
-from accounts.api.serializers.admin_serializers import \
+from .serializers.mixins import CreateUserMixin
+from .serializers.admin_serializers import \
     AdminCreateSerializer, AdminListSerializer, AdminRetrieveUpdateSerializer, AdminDestroySerializer
-from accounts.api.serializers.mixins import CreateUserMixin
-from accounts.api.serializers.normal_serializers import \
+from .serializers.normal_serializers import \
     NormalCreateSerializer, NormalListSerializer, NormalRetrieveUpdateSerializer, NormalDestroySerializer
-from accounts.api.serializers.staff_serializers import \
+from .serializers.staff_serializers import \
     StaffCreateSerializer, StaffListSerializer, StaffRetrieveUpdateSerializer, StaffDestroySerializer
 from accounts.models import AdminUser, NormalUser, StaffUser
 

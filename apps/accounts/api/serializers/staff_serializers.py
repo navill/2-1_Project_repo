@@ -1,5 +1,6 @@
 from typing import Dict
 
+from django.urls import reverse
 from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
 from rest_framework.validators import UniqueValidator
@@ -74,3 +75,9 @@ class StaffDestroySerializer(ModelSerializer):
     class Meta:
         model = StaffUser
         fields = '__all__'
+
+    def get_absolute_url(self):
+        return reverse("accounts:detail_staff", kwargs={"pk": self.id})
+
+    def get_api_url(self):
+        return reverse("accounts_api:detail_normal", kwargs={"pk": self.id})

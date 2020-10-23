@@ -2,6 +2,7 @@ from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.db import models
 
 from django.db.models import Q
+from django.urls import reverse
 
 
 class Role(models.TextChoices):
@@ -39,7 +40,7 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser):
-    username = models.CharField(max_length=15, unique=True)
+    username = models.CharField(max_length=15, unique=True, editable=True)
     email = models.EmailField(unique=True)
     birth = models.DateField(null=True, blank=True)
     role = models.CharField(max_length=8, choices=Role.choices, default=Role.NORMAL)
@@ -153,11 +154,14 @@ class NormalManager(models.Manager):
     def active_user(self):
         return self.get_queryset().active_user()
 
-    # def all(self):
-    #     return self.get_queryset().active_user()
-
 
 class NormalUser(User):
     is_superuser = models.BooleanField(default=False)
 
     normal_manager = NormalManager()
+
+    def get_absolute_url(self):
+        return reverse("accounts:detail_normal", kwargs={"pk": self.id})
+
+    def get_api_url(self):
+        return reverse("accounts_api:detail_normal", kwargs={"pk": self.id})

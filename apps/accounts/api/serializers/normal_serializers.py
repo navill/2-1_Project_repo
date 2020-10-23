@@ -1,5 +1,8 @@
+from __future__ import absolute_import
+
 from rest_framework import serializers
 from rest_framework.pagination import LimitOffsetPagination
+from rest_framework.relations import HyperlinkedIdentityField
 from rest_framework.serializers import ModelSerializer
 
 from accounts.models import NormalUser
@@ -8,11 +11,8 @@ from accounts.models import NormalUser
 class NormalCreateSerializer(ModelSerializer):
     class Meta:
         model = NormalUser
-        # fields = '__all__'
         exclude = ['deleted', 'is_admin', 'is_active', 'is_superuser']
-
-    # def create(self, validated_data):  # -> view에서 처리
-    #     pass
+        extra_kwargs = {'password': {'write_only': True}}
 
 
 class NormalListSerializer(ModelSerializer):
@@ -22,18 +22,23 @@ class NormalListSerializer(ModelSerializer):
         exclude = ['password']
 
 
+account_detail_url = HyperlinkedIdentityField(
+    view_name='accounts-api:detail_normal',
+    lookup_field='pk'
+)
+
+
 class NormalRetrieveUpdateSerializer(ModelSerializer):
+    url = account_detail_url
     username = serializers.CharField(read_only=True)
 
     class Meta:
         model = NormalUser
-        # fields = '__all__'
         read_only_fields = ['__all__']
         exclude = ['password']
 
-    # def update(self, instance, validated_data):  # -> view에서 처리
-    #     pass
-
+    def to_representation(self, instance):
+        pass
 
 class NormalDestroySerializer(ModelSerializer):
     class Meta:
