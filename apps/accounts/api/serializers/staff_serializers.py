@@ -2,6 +2,7 @@ from typing import Dict
 
 from django.urls import reverse
 from rest_framework import serializers
+from rest_framework.relations import HyperlinkedIdentityField
 from rest_framework.serializers import ModelSerializer
 from rest_framework.validators import UniqueValidator
 
@@ -12,8 +13,10 @@ class StaffCreateSerializer(ModelSerializer):
     username = serializers.CharField(min_length=4, max_length=16, required=True,
                                      validators=[UniqueValidator(queryset=StaffUser.objects.all())])
     email = serializers.EmailField(required=True, validators=[UniqueValidator(queryset=StaffUser.objects.all())])
-    password = serializers.CharField(min_length=8, max_length=16, write_only=True, required=True)
-    password2 = serializers.CharField(min_length=8, max_length=16, write_only=True, required=True)
+    password = serializers.CharField(min_length=8, max_length=16, write_only=True,
+                                     style={'input_type': 'password'})
+    password2 = serializers.CharField(min_length=8, max_length=16, write_only=True,
+                                      style={'input_type': 'password'})
     role = serializers.ChoiceField(choices=Role.choices)
 
     class Meta:
@@ -60,12 +63,22 @@ class StaffCreateSerializer(ModelSerializer):
 
 
 class StaffListSerializer(ModelSerializer):
+    url = HyperlinkedIdentityField(
+        view_name='accounts_api:detail_staff',
+        lookup_field='pk'
+    )
+
     class Meta:
         model = StaffUser
         fields = '__all__'
 
 
 class StaffRetrieveUpdateSerializer(ModelSerializer):
+    url = HyperlinkedIdentityField(
+        view_name='accounts_api:detail_staff',
+        lookup_field='pk'
+    )
+
     class Meta:
         model = StaffUser
         fields = '__all__'
@@ -80,4 +93,4 @@ class StaffDestroySerializer(ModelSerializer):
         return reverse("accounts:detail_staff", kwargs={"pk": self.id})
 
     def get_api_url(self):
-        return reverse("accounts_api:detail_normal", kwargs={"pk": self.id})
+        return reverse("accounts_api:detail_staff", kwargs={"pk": self.id})

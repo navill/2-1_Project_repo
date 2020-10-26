@@ -40,7 +40,7 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser):
-    username = models.CharField(max_length=15, unique=True, editable=True)
+    username = models.CharField(max_length=15, unique=True, editable=False)
     email = models.EmailField(unique=True)
     birth = models.DateField(null=True, blank=True)
     role = models.CharField(max_length=8, choices=Role.choices, default=Role.NORMAL)
@@ -74,6 +74,7 @@ class User(AbstractBaseUser):
 
     class Meta:
         abstract = True
+        ordering = ['-date_joined']
 
 
 # Admin User

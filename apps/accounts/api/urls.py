@@ -12,8 +12,8 @@ urlpatterns = [
 
     path('staff/list/', StaffUserListView.as_view(), name='list_staff'),
     path('staff/create/', StaffUserCreateView.as_view(), name='create_staff'),
-    path('staff/detail/<int:pk>', StaffUserRetrieveUpdateView.as_view(), name='detail_normal'),
-    path('staff/delete/<int:pk>', StaffUserDestroyView.as_view(), name='delete_normal'),
+    path('staff/detail/<int:pk>', StaffUserRetrieveUpdateView.as_view(), name='detail_staff'),
+    path('staff/delete/<int:pk>', StaffUserDestroyView.as_view(), name='delete_staff'),
 
     path('admin/list/', AdminUserListView.as_view(), name='list_admin'),
     path('admin/create/', AdminUserCreateView.as_view(), name='create_admin'),

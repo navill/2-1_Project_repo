@@ -34,6 +34,8 @@ INSTALLED_APPS = [
 
     # apps
     'accounts',
+    'files',
+    'profiles',
 ]
 
 MIDDLEWARE = [
@@ -106,6 +108,9 @@ USE_TZ = False
 
 STATIC_URL = '/static/'
 AUTH_USER_MODEL = 'accounts.NormalUser'
+STAFF_USER_MODEL = 'accounts.StaffUser'
+ADMIN_USER_MODEL = 'accounts.AdminUser'
+
 LOGIN_URL = 'login'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
