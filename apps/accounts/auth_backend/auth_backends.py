@@ -3,19 +3,11 @@ from typing import Any
 
 from django.contrib.auth.backends import ModelBackend
 
-from accounts.models import NormalUser, User
+from accounts.models import User
 
 
 class UserClass:
     user_class: Any
-
-    # @property
-    # def user_class(self):
-    #     return self._user_class
-    #
-    # @user_class.setter
-    # def user_class(self, klass):
-    #     self._user_class = klass
 
 
 class AuthenticationBackend(ModelBackend):

@@ -2,6 +2,7 @@ from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.db import models
 
 from django.db.models import Q
+from django.urls import reverse
 
 
 class Role(models.TextChoices):
@@ -39,7 +40,7 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser):
-    username = models.CharField(max_length=15, unique=True)
+    username = models.CharField(max_length=15, unique=True, editable=False)
     email = models.EmailField(unique=True)
     birth = models.DateField(null=True, blank=True)
     role = models.CharField(max_length=8, choices=Role.choices, default=Role.NORMAL)
@@ -73,6 +74,7 @@ class User(AbstractBaseUser):
 
     class Meta:
         abstract = True
+        ordering = ['-date_joined']
 
 
 # Admin User
@@ -129,6 +131,9 @@ class StaffManager(models.Manager):
     def active_staff(self):
         return self.get_queryset().active_staff()
 
+    # def all(self):
+    #     return self.get_queryset().active_staff()
+
 
 class StaffUser(User):
     role = models.CharField(max_length=6, choices=Role.choices, default=Role.STAFF)
@@ -154,4 +159,10 @@ class NormalManager(models.Manager):
 class NormalUser(User):
     is_superuser = models.BooleanField(default=False)
 
-    normal_manager = UserManager()
+    normal_manager = NormalManager()
+
+    def get_absolute_url(self):
+        return reverse("accounts:detail_normal", kwargs={"pk": self.id})
+
+    def get_api_url(self):
+        return reverse("accounts_api:detail_normal", kwargs={"pk": self.id})
