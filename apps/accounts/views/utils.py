@@ -3,6 +3,17 @@ from django.http import HttpResponse
 from django.shortcuts import redirect
 
 
+def admin_login_required(function):
+    def wrapper(request, *args, **kwargs):
+        user = request.user
+        if not (user.is_authenticated and user.is_superuser):
+            return redirect('login')
+        else:
+            return function(request, *args, **kwargs)
+
+    return wrapper
+
+
 def staff_login_required(function):
     def wrapper(request, *args, **kwargs):
         user_info = request.session.get('user_info')

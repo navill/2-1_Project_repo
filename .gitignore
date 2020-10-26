@@ -166,4 +166,4 @@ key_file.py
 storage/
 logs/
 logfile
-
+conf_secret.json
