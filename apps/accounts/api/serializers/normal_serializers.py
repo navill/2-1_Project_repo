@@ -10,7 +10,6 @@ from rest_framework.validators import UniqueValidator
 from accounts.models import NormalUser, Role
 
 
-
 class NormalCreateSerializer(ModelSerializer):
     username = serializers.CharField(min_length=4, max_length=16, required=True,
                                      validators=[UniqueValidator(queryset=NormalUser.objects.all())])
@@ -58,10 +57,10 @@ class NormalCreateSerializer(ModelSerializer):
             'status': 'ok'
         }
 
-    def _check_match_password(self, password1: str, password2: str) -> str:
+    def _check_match_password(self, password1: str, password2: str) -> bool:
         if password1 != password2:
-            raise Exception
-        return password1
+            raise Exception('password must match')
+        return True
 
 
 class NormalListSerializer(ModelSerializer):

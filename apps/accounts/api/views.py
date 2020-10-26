@@ -4,7 +4,7 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.mixins import *
 from rest_framework.pagination import LimitOffsetPagination
 
-from .serializers.mixins import CreateUserMixin
+from accounts.api.mixins import CreateUserMixin
 from .serializers.admin_serializers import \
     AdminCreateSerializer, AdminListSerializer, AdminRetrieveUpdateSerializer, AdminDestroySerializer
 from .serializers.normal_serializers import \

@@ -19,11 +19,11 @@ class BaseProfile(models.Model):
         abstract = True
 
 
-class NormalUserProfiles(BaseProfile):
+class NormalUserProfile(BaseProfile):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     descriptions = models.TextField(default='')
 
 
-class StaffUserProfiles(BaseProfile):
+class StaffUserProfile(BaseProfile):
     staff = models.OneToOneField(StaffUser, on_delete=models.CASCADE)
     department = models.CharField(max_length=100, default='')
